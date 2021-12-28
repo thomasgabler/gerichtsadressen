@@ -69,7 +69,7 @@ def main1():
 
 
 def main2():
-    filename = 'lpk.csv'
+    filename = 'foolpk.csv'
     fields = ['Name', 'Straße', 'Plz', 'Ort', 'Email']
     # max = 50
     rows = []

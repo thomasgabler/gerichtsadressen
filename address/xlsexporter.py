@@ -45,7 +45,7 @@ class XlsExporter:
     def group(df: pd.core.frame.DataFrame):
         df_email = pd.DataFrame()  # with E-Mail
         df_post = pd.DataFrame()  # without E-Mail
-        for address, group_address in df.groupby(XlsExporter.ADDRESS_FIELDS):
+        for address, group_address in df.groupby(XlsExporter.ADDRESS_FIELDS, dropna=False):
             has_email = False
             for email, group_email in group_address.groupby(XlsExporter.EMAIL_FIELD, dropna=False):
                 combined = XlsExporter.combine_field(group_email, XlsExporter.NAME_FIELD)
@@ -68,14 +68,13 @@ class XlsExporter:
     @staticmethod
     def write_df(df: pd.core.frame.DataFrame, filename: str = 'foo.xlsx'):
 
+        df['Plz'].fillna(0, inplace=True)
+        df['Plz'] = df['Plz'].astype(int)
+
         writer = pd.ExcelWriter(filename, engine='xlsxwriter')
         df_email, df_post = XlsExporter.group(df)
 
         df, df_email, df_post = XlsExporter._sort(df, df_email, df_post)
-
-        df['Plz'] = df['Plz'].astype(int)
-        df_email['Plz'] = df_email['Plz'].astype(int)
-        df_post['Plz'] = df_post['Plz'].astype(int)
 
         df_sheets = [(df, XlsExporter.SHEET_NAME_ADDRESS),
                      (df_email, XlsExporter.SHEET_NAME_EMAIL),
@@ -98,6 +97,7 @@ class XlsExporter:
 
         XlsExporter._add_color_sheet(writer, df)
         writer.save()
+        print("Finished")
 
     @staticmethod
     def _set_columns_width(workbook: xlsxwriter.workbook.Workbook, df: pd.core.frame.DataFrame,
@@ -123,12 +123,14 @@ class XlsExporter:
 
     @staticmethod
     def _sort(df: pd.core.frame.DataFrame, df_email: pd.core.frame.DataFrame, df_post: pd.core.frame.DataFrame):
-
         sortby = ['Plz', 'Straße', 'Name', 'E-Mail']
         sortby2 = ['Plz', 'Straße', 'Name']
-        df = df.sort_values(by=sortby)
-        df_email = df_email.sort_values(by=sortby)
-        df_post = df_post.sort_values(by=sortby2)
+        try:
+            df = df.sort_values(by=sortby)
+            df_email = df_email.sort_values(by=sortby)
+            df_post = df_post.sort_values(by=sortby2)
+        except KeyError:
+            pass
         return df, df_email, df_post
 
     @staticmethod

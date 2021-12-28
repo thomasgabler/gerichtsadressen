@@ -8,6 +8,7 @@ from pprint import pprint
 import pandas as pd
 from address.xlsexporter import XlsExporter
 
+
 def combine_names(df):
     # pprint(df)
     # names = nameToLines(df)
@@ -51,10 +52,13 @@ ads = pickle.load(pickle_off)
 # exit()
 
 # df = pd.read_csv('psychokammer2.csv', delimiter=';', quotechar='"', encoding='utf8')
-df = pd.read_csv('foo2.csv', delimiter=';', quotechar='"', encoding='utf8')
-
-XlsExporter.write(ads,'foo3.xlsx')
-#XlsExporter.write_df(df,'foo3.xlsx')
+filename = 'foo2.csv'
+filename = r'D:\Users\Thomas\Documents\Weinberger-Forum\moodle\Programmierung\Justiz-Adressen\lpk\Landespsychotherapeutenkammer Baden-Württemberg.csv'
+df = pd.read_csv(filename, delimiter=';', quotechar='"', encoding='utf8')
+#df.fillna('', inplace=True)
+# pprint(df['Plz'])
+#XlsExporter.write(ads, 'foo3.xlsx')
+XlsExporter.write_df(df,'foo3.xlsx')
 exit()
 
 # df = addresses2df(ads)
