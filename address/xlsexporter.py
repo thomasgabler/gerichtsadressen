@@ -18,7 +18,7 @@ class XlsExporter:
     FORMAT1 = {'bg_color': '#FFEB9C', 'font_color': '#000000'}
     # Green fill
     FORMAT2 = {'bg_color': '#C6EFCE', 'font_color': '#000000'}
-    FORMAT_COLUMN_PLZ = {'align': 'center'}
+    FORMAT_COLUMN_PLZ = {'align': 'center','num_format': '00000'}
     FORMAT_COLUMN_NAME = {'text_wrap': True}
 
     @staticmethod
@@ -67,10 +67,8 @@ class XlsExporter:
 
     @staticmethod
     def write_df(df: pd.core.frame.DataFrame, filename: str = 'foo.xlsx'):
-
-        df['Plz'].fillna(0, inplace=True)
-        df['Plz'] = df['Plz'].astype(int)
-
+        df.drop_duplicates(inplace=True)
+        df.fillna('', inplace=True)
         writer = pd.ExcelWriter(filename, engine='xlsxwriter')
         df_email, df_post = XlsExporter.group(df)
 
@@ -109,7 +107,7 @@ class XlsExporter:
         max_length = []
         for item in list(df):
             if item == 'Plz':
-                max_length.append(5)  # @see df['Plz'].astype(int)
+                max_length.append(5)
             else:
                 max_length.append(df[item].str.len().max())
 

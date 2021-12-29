@@ -105,10 +105,7 @@ def main():
             try:
                 foo = html.unescape(f.read()).replace(to_delete, '')
                 data = json.loads(foo)['data']
-                # print(data)
-
                 for d in data:
-                    # print(d)
                     name = ' '.join([d['anrede'], d['svorname'], d['sname']]).strip()
                     plz = d['plz']
                     ort = d['ort']
@@ -118,42 +115,10 @@ def main():
                     addresses.add(a)
             except JSONDecodeError:
                 pass
-    with open('addresses.txt', 'wb') as fh:
-        pickle.dump(addresses, fh)
-    # pprint(len(addresses.addresses))
-    # for x in addresses.addresses:
-    #    pprint(x)
-    # CsvExporter.write(filename, addresses)
-    #df = Xl
+    #with open('addresses.txt', 'wb') as fh:
+    #    pickle.dump(addresses, fh)
     XlsExporter.write(addresses, 'psychokammer2.xlsx')
     exit()
-
-    rows = []
-    with open('psychotherapeuten.json', "r", encoding='utf8') as f:
-        # with open('psychotherapeuten.json', "r") as f:
-        data = json.load(f)['data']
-        fields = list(data[0].keys())
-        for address in data:
-            # pprint(address.values())
-            # exit()
-            # for a in address.values():
-            row = [html.unescape(a) for a in address.values()]
-            rows.append(row)
-            # pprint(row)
-            # exit()
-            # exit()
-            # rows.append(row)
-            # pprint(row)
-            # exit()
-        #   row = list(addresses.values())
-    # pprint(row)
-    # exit
-
-    # rows = [list(address.values()) for address in data]
-    # rows = [html.unescape(list(address.values())) for address in data]
-    # pprint(rows)
-    # exit()
-    write_excel(fields, rows, filename)
 
 
 def gen_urls():
